@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expenso - Sleek Expense Tracker</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>💰</text></svg>">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              // Light Mode Colors
+              'light-bg-primary': '#FFFFFF',
+              'light-bg-secondary': 'rgba(242, 242, 247, 0.7)',
+              'light-bg-tertiary': 'rgba(230, 230, 230, 0.7)',
+              'light-text-primary': '#1D1D1F',
+              'light-text-secondary': 'rgba(60, 60, 67, 0.6)',
+              'light-text-tertiary': 'rgba(60, 60, 67, 0.3)',
+              'light-border-primary': 'rgba(60, 60, 67, 0.29)',
+
+              // Dark Mode Colors
+              'dark-bg-primary': '#1C1C1E',
+              'dark-bg-secondary': 'rgba(44, 44, 46, 0.75)',
+              'dark-bg-tertiary': 'rgba(60, 60, 62, 0.75)',
+              'dark-text-primary': '#FFFFFF',
+              'dark-text-secondary': 'rgba(235, 235, 245, 0.6)',
+              'dark-text-tertiary': 'rgba(235, 235, 245, 0.3)',
+              'dark-border-primary': 'rgba(84, 84, 88, 0.65)',
+            },
+            fontFamily: {
+                sans: ['Inter', 'sans-serif'],
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              slideInUp: {
+                '0%': { opacity: '0', transform: 'translateY(30px) scale(0.95)' },
+                '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+              },
+            },
+            animation: {
+              'fade-in': 'fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              'slide-in-up': 'slideInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            },
+          }
+        },
+        darkMode: 'class'
+      }
+    </script>
+
+    <style>
+      /* Custom scrollbar to match theme */
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { 
+        background: var(--scroll-track, #F3F4F6); 
+        transition: background-color 0.3s;
+      }
+      .dark ::-webkit-scrollbar-track { background: var(--scroll-track, #1C1C1E); }
+      ::-webkit-scrollbar-thumb { 
+        background: var(--scroll-thumb, #D1D5DB); 
+        border-radius: 10px;
+        transition: background-color 0.3s;
+      }
+      .dark ::-webkit-scrollbar-thumb { background: var(--scroll-thumb, #3C3C3E); }
+      ::-webkit-scrollbar-thumb:hover { 
+        background: var(--scroll-thumb-hover, #9CA3AF); 
+      }
+      .dark ::-webkit-scrollbar-thumb:hover { background: var(--scroll-thumb-hover, #5C5C5E); }
+
+      /* Custom date picker icon color */
+      input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(0.2);
+        cursor: pointer;
+      }
+      .dark input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+      }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "recharts": "https://aistudiocdn.com/recharts@^3.3.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "firebase/": "https://aistudiocdn.com/firebase@^12.5.0/"
+  }
+}
+</script>
+</head>
+<body class="bg-light-bg-primary dark:bg-dark-bg-primary min-h-screen antialiased">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+</body>
+</html>

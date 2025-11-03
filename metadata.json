@@ -1,0 +1,5 @@
+{
+  "name": "Expenso - Sleek Expense Tracker",
+  "description": "A sleek, modern expense and income tracker with budgeting, category management, and data visualization. Built with React, TypeScript, and Tailwind CSS, and backed by Firebase for real-time data synchronization.",
+  "requestFramePermissions": []
+}
