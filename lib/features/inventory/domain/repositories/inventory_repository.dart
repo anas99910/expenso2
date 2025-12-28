@@ -6,4 +6,5 @@ abstract class InventoryRepository {
   Future<void> updateItem(Item item);
   Future<void> deleteItem(String id);
   Future<List<Item>> getShoppingList(); // Items with status needToBuy or low
+  Future<void> clearAllData();
 }

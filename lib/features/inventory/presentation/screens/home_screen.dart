@@ -2,6 +2,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:inventory_app/features/inventory/presentation/screens/inventory_screen.dart';
 import 'package:inventory_app/features/shopping_list/presentation/screens/shopping_list_screen.dart';
+import 'package:inventory_app/features/settings/presentation/screens/settings_screen.dart';
+import 'package:inventory_app/core/services/update_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,8 +18,16 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _screens = const [
     InventoryScreen(),
     ShoppingListScreen(),
-    Center(child: Text('Categories - Coming Soon')),
+    SettingsScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      UpdateService().checkForUpdate(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,9 +92,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 label: 'Shopping',
               ),
               NavigationDestination(
-                icon: Icon(Icons.category_outlined, color: Colors.white70),
-                selectedIcon: Icon(Icons.category, color: Colors.white),
-                label: 'Categories',
+                icon: Icon(Icons.settings_outlined, color: Colors.white70),
+                selectedIcon: Icon(Icons.settings, color: Colors.white),
+                label: 'Settings',
               ),
             ],
           ),

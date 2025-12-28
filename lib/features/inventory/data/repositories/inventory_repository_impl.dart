@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-import 'package:inventory_app/core/constants/app_constants.dart';
 import 'package:inventory_app/features/inventory/data/models/item_model.dart';
 import 'package:inventory_app/features/inventory/domain/entities/item.dart';
 import 'package:inventory_app/features/inventory/domain/repositories/inventory_repository.dart';
@@ -34,9 +33,15 @@ class InventoryRepositoryImpl implements InventoryRepository {
   @override
   Future<List<Item>> getShoppingList() async {
     final allItems = await getItems();
-    return allItems.where((item) => 
-      item.status == ItemStatus.needToBuy || 
-      item.status == ItemStatus.low
-    ).toList();
+    return allItems
+        .where((item) =>
+            item.status == ItemStatus.needToBuy ||
+            item.status == ItemStatus.low)
+        .toList();
+  }
+
+  @override
+  Future<void> clearAllData() async {
+    await _box.clear();
   }
 }
