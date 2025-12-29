@@ -61,7 +61,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           title: 'Check for Updates',
           subtitle: 'Manually check for a new version',
           onTap: () {
-            UpdateService().checkForUpdate(context);
+            UpdateService().checkForUpdate(context, silent: false);
           },
         ),
         const SizedBox(height: 20),

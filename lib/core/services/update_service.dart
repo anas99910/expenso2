@@ -11,7 +11,8 @@ class UpdateService {
   final String repoOwner = 'anas99910';
   final String repoName = 'expenso2';
 
-  Future<void> checkForUpdate(BuildContext context) async {
+  Future<void> checkForUpdate(BuildContext context,
+      {bool silent = false}) async {
     try {
       final packageInfo = await PackageInfo.fromPlatform();
       final currentVersion = Version.parse(packageInfo.version);
@@ -39,15 +40,40 @@ class UpdateService {
             }
           } else {
             debugPrint('App is up to date.');
+            if (!silent && context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('You are on the latest version'),
+                  backgroundColor: Color(0xFF006C5B),
+                ),
+              );
+            }
           }
         } catch (e) {
           debugPrint('Error parsing version: $e');
         }
       } else {
         debugPrint('Failed to fetch releases. Status: ${response.statusCode}');
+        if (!silent && context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  'Failed to check for updates (Status: ${response.statusCode})'),
+              backgroundColor: Colors.redAccent,
+            ),
+          );
+        }
       }
     } catch (e) {
       debugPrint('Error checking for updates: $e');
+      if (!silent && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to check for updates. Check internet.'),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
     }
   }
 
