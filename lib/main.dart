@@ -14,10 +14,10 @@ void main() async {
 
   // 2. Initialize Hive
   await Hive.initFlutter();
-  
+
   // 3. Register Adapters
   // NOTE: You must run `flutter pub run build_runner build` to generate the Adapter
-  Hive.registerAdapter(ItemModelAdapter()); 
+  Hive.registerAdapter(ItemModelAdapter());
 
   // 4. Open Box
   final box = await Hive.openBox<ItemModel>(AppConstants.hiveBoxName);
@@ -25,11 +25,15 @@ void main() async {
   // 5. Initialize Repository
   final repository = InventoryRepositoryImpl(box);
 
-  // 6. Run App with ProviderScope override
+  // 6. Open Settings Box
+  final settingsBox = await Hive.openBox('settings');
+
+  // 7. Run App with ProviderScope override
   runApp(
     ProviderScope(
       overrides: [
         inventoryRepositoryProvider.overrideWithValue(repository),
+        settingsBoxProvider.overrideWithValue(settingsBox),
       ],
       child: const MyApp(),
     ),

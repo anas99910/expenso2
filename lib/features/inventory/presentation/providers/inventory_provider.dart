@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:inventory_app/features/inventory/domain/entities/item.dart';
 import 'package:inventory_app/features/inventory/domain/repositories/inventory_repository.dart';
 
@@ -7,18 +8,29 @@ final inventoryRepositoryProvider = Provider<InventoryRepository>((ref) {
   throw UnimplementedError('inventoryRepositoryProvider requires override');
 });
 
+// Provider for Settings Box (Needs to be overridden in main.dart)
+final settingsBoxProvider = Provider<Box>((ref) {
+  throw UnimplementedError('settingsBoxProvider requires override');
+});
+
 // StateNotifier to manage Item List
 class InventoryNotifier extends StateNotifier<AsyncValue<List<Item>>> {
   final InventoryRepository _repository;
+  final Box _settingsBox;
 
-  InventoryNotifier(this._repository) : super(const AsyncValue.loading()) {
+  InventoryNotifier(this._repository, this._settingsBox)
+      : super(const AsyncValue.loading()) {
     loadItems();
   }
 
   Future<void> loadItems() async {
     try {
       final items = await _repository.getItems();
-      if (items.isEmpty) {
+
+      // Check if we have already seeded data
+      final bool hasSeeded = _settingsBox.get('hasSeeded', defaultValue: false);
+
+      if (items.isEmpty && !hasSeeded) {
         await _seedDefaultItems();
       } else {
         state = AsyncValue.data(items);
@@ -63,6 +75,10 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<Item>>> {
     for (var item in defaultItems) {
       await _repository.addItem(item);
     }
+
+    // Mark as seeded so we don't do this again
+    await _settingsBox.put('hasSeeded', true);
+
     // Reload to update state
     final items = await _repository.getItems();
     state = AsyncValue.data(items);
@@ -136,7 +152,8 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<Item>>> {
 final inventoryProvider =
     StateNotifierProvider<InventoryNotifier, AsyncValue<List<Item>>>((ref) {
   final repository = ref.watch(inventoryRepositoryProvider);
-  return InventoryNotifier(repository);
+  final settingsBox = ref.watch(settingsBoxProvider);
+  return InventoryNotifier(repository, settingsBox);
 });
 
 // Shopping List Provider (Derived)
