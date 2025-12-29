@@ -16,72 +16,17 @@ final settingsBoxProvider = Provider<Box>((ref) {
 // StateNotifier to manage Item List
 class InventoryNotifier extends StateNotifier<AsyncValue<List<Item>>> {
   final InventoryRepository _repository;
-  final Box _settingsBox;
-
-  InventoryNotifier(this._repository, this._settingsBox)
-      : super(const AsyncValue.loading()) {
+  InventoryNotifier(this._repository) : super(const AsyncValue.loading()) {
     loadItems();
   }
 
   Future<void> loadItems() async {
     try {
       final items = await _repository.getItems();
-
-      // Check if we have already seeded data
-      final bool hasSeeded = _settingsBox.get('hasSeeded', defaultValue: false);
-
-      if (items.isEmpty && !hasSeeded) {
-        await _seedDefaultItems();
-      } else {
-        state = AsyncValue.data(items);
-      }
+      state = AsyncValue.data(items);
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
-  }
-
-  Future<void> _seedDefaultItems() async {
-    final defaultItems = [
-      const Item(
-          id: '1',
-          name: 'Potatoes (Batata)',
-          category: 'Kitchen',
-          quantity: 5.0,
-          unit: 'kg',
-          status: ItemStatus.available),
-      const Item(
-          id: '2',
-          name: 'Eggs (Bid)',
-          category: 'Kitchen',
-          quantity: 30.0,
-          unit: 'piece',
-          status: ItemStatus.available),
-      const Item(
-          id: '3',
-          name: 'Milk (Hlib)',
-          category: 'Kitchen',
-          quantity: 2.0,
-          unit: 'liter',
-          status: ItemStatus.low),
-      const Item(
-          id: '4',
-          name: 'Butane Gas',
-          category: 'Gas & Utilities',
-          quantity: 1.0,
-          unit: 'bottle',
-          status: ItemStatus.available),
-    ];
-
-    for (var item in defaultItems) {
-      await _repository.addItem(item);
-    }
-
-    // Mark as seeded so we don't do this again
-    await _settingsBox.put('hasSeeded', true);
-
-    // Reload to update state
-    final items = await _repository.getItems();
-    state = AsyncValue.data(items);
   }
 
   Future<void> addItem(Item item) async {
@@ -152,8 +97,7 @@ class InventoryNotifier extends StateNotifier<AsyncValue<List<Item>>> {
 final inventoryProvider =
     StateNotifierProvider<InventoryNotifier, AsyncValue<List<Item>>>((ref) {
   final repository = ref.watch(inventoryRepositoryProvider);
-  final settingsBox = ref.watch(settingsBoxProvider);
-  return InventoryNotifier(repository, settingsBox);
+  return InventoryNotifier(repository);
 });
 
 // Shopping List Provider (Derived)

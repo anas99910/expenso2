@@ -11,16 +11,37 @@ class InventoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final inventoryState = ref.watch(inventoryProvider);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : const Color(0xFF00332C);
+    final subTextColor =
+        isDark ? Colors.white70 : const Color(0xFF00332C).withOpacity(0.7);
+    final iconColor = isDark ? Colors.white : const Color(0xFF006C5B);
 
     return inventoryState.when(
       data: (items) {
         if (items.isEmpty) {
-          return const Center(
-              child: Text('No items yet. Add some!',
-                  style: TextStyle(color: Colors.white70)));
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.inventory_2_outlined,
+                    size: 64, color: subTextColor.withOpacity(0.5)),
+                const SizedBox(height: 16),
+                Text(
+                  'Add your inventory',
+                  style: TextStyle(
+                    color: subTextColor,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          );
         }
         final grouped = <String, List<Item>>{};
         for (var item in items) {
+          if (item.status == ItemStatus.todo) continue;
           grouped.putIfAbsent(item.category, () => []).add(item);
         }
 
@@ -34,18 +55,18 @@ class InventoryScreen extends ConsumerWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: GlassContainer(
-                    opacity: 0.1,
+                    opacity: isDark ? 0.1 : 0.5,
                     blur: 10,
                     child: Theme(
                       data: Theme.of(context).copyWith(
                         dividerColor: Colors.transparent,
-                        expansionTileTheme: const ExpansionTileThemeData(
+                        expansionTileTheme: ExpansionTileThemeData(
                           backgroundColor: Colors.transparent,
                           collapsedBackgroundColor: Colors.transparent,
-                          textColor: Colors.white,
-                          collapsedTextColor: Colors.white,
-                          iconColor: Colors.white,
-                          collapsedIconColor: Colors.white,
+                          textColor: textColor,
+                          collapsedTextColor: textColor,
+                          iconColor: textColor,
+                          collapsedIconColor: textColor,
                         ),
                       ),
                       child: ExpansionTile(
@@ -81,27 +102,31 @@ class InventoryScreen extends ConsumerWidget {
                             },
                             child: ListTile(
                               leading: CircleAvatar(
-                                backgroundColor: Colors.white24,
+                                backgroundColor: isDark
+                                    ? Colors.white24
+                                    : const Color(0xFF006C5B).withOpacity(0.1),
                                 child: Text(
                                   item.name[0].toUpperCase(),
-                                  style: const TextStyle(color: Colors.white),
+                                  style: TextStyle(color: iconColor),
                                 ),
                               ),
                               title: Text(item.name,
-                                  style: const TextStyle(color: Colors.white)),
+                                  style: TextStyle(color: textColor)),
                               subtitle: Row(
                                 children: [
                                   Container(
                                     decoration: BoxDecoration(
-                                      color: Colors.white12,
+                                      color: isDark
+                                          ? Colors.white12
+                                          : Colors.black12,
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         IconButton(
-                                          icon: const Icon(Icons.remove,
-                                              size: 16, color: Colors.white),
+                                          icon: Icon(Icons.remove,
+                                              size: 16, color: iconColor),
                                           onPressed: () {
                                             ref
                                                 .read(
@@ -114,13 +139,13 @@ class InventoryScreen extends ConsumerWidget {
                                         ),
                                         Text(
                                           '${item.quantity.toInt()} ${item.unit}',
-                                          style: const TextStyle(
-                                              color: Colors.white70,
+                                          style: TextStyle(
+                                              color: subTextColor,
                                               fontSize: 13),
                                         ),
                                         IconButton(
-                                          icon: const Icon(Icons.add,
-                                              size: 16, color: Colors.white),
+                                          icon: Icon(Icons.add,
+                                              size: 16, color: iconColor),
                                           onPressed: () {
                                             ref
                                                 .read(
@@ -182,8 +207,7 @@ class InventoryScreen extends ConsumerWidget {
           ],
         );
       },
-      loading: () =>
-          const Center(child: CircularProgressIndicator(color: Colors.white)),
+      loading: () => Center(child: CircularProgressIndicator(color: iconColor)),
       error: (e, st) => Center(
           child: Text('Error: $e',
               style: const TextStyle(color: Colors.redAccent))),
@@ -201,6 +225,9 @@ class InventoryScreen extends ConsumerWidget {
         break;
       case ItemStatus.needToBuy:
         color = Colors.redAccent;
+        break;
+      case ItemStatus.todo:
+        color = Colors.blueGrey;
         break;
     }
     return Container(

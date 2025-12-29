@@ -1,7 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:inventory_app/features/inventory/presentation/screens/inventory_screen.dart';
-import 'package:inventory_app/features/shopping_list/presentation/screens/shopping_list_screen.dart';
+
+import 'package:inventory_app/features/todo/presentation/screens/todo_list_screen.dart';
 import 'package:inventory_app/features/settings/presentation/screens/settings_screen.dart';
 import 'package:inventory_app/core/services/update_service.dart';
 
@@ -17,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   final List<Widget> _screens = const [
     InventoryScreen(),
-    ShoppingListScreen(),
+    ToDoListScreen(),
     SettingsScreen(),
   ];
 
@@ -36,15 +37,24 @@ class _HomeScreenState extends State<HomeScreen> {
         // 1. Global Background
         Positioned.fill(
           child: Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFF00332C), // Very dark green
-                  Color(0xFF000000), // Black
-                  Color(0xFF004D40), // Dark Teal
-                ],
+                colors: Theme.of(context).brightness == Brightness.dark
+                    ? [
+                        const Color(0xFF00332C), // Very dark green
+                        const Color(0xFF000000), // Black
+                        const Color(0xFF004D40), // Dark Teal
+                      ]
+                    : [
+                        const Color(
+                            0xFFD6E4E5), // Light Blue-Grey (from image background)
+                        const Color(
+                            0xFFFDFBF7), // Cream/Off-White (from cabinet)
+                        const Color(0xFFFFFFFF), // White
+                        const Color(0xFFB2DFDB), // Light Teal
+                      ],
               ),
             ),
           ),
@@ -62,13 +72,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: const SizedBox.expand(),
               ),
             ),
-            title: const Text('بيت الخزين',
+            title: Text('بيت الخزين',
                 style: TextStyle(
-                    color: Colors.white,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : const Color(0xFF006C5B),
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.2,
                     fontFamily: 'Outfit')),
-            iconTheme: const IconThemeData(color: Colors.white),
+            iconTheme: IconThemeData(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white
+                    : const Color(0xFF006C5B)),
           ),
           body: IndexedStack(
             index: _currentIndex,
@@ -80,20 +95,38 @@ class _HomeScreenState extends State<HomeScreen> {
             selectedIndex: _currentIndex,
             onDestinationSelected: (index) =>
                 setState(() => _currentIndex = index),
-            destinations: const [
+            destinations: [
               NavigationDestination(
-                icon: Icon(Icons.inventory_2_outlined, color: Colors.white70),
-                selectedIcon: Icon(Icons.inventory_2, color: Colors.white),
+                icon: Icon(Icons.inventory_2_outlined,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white70
+                        : Colors.black54),
+                selectedIcon: Icon(Icons.inventory_2,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black),
                 label: 'Inventory',
               ),
               NavigationDestination(
-                icon: Icon(Icons.shopping_cart_outlined, color: Colors.white70),
-                selectedIcon: Icon(Icons.shopping_cart, color: Colors.white),
-                label: 'Shopping',
+                icon: Icon(Icons.checklist_rtl_rounded,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white70
+                        : Colors.black54),
+                selectedIcon: Icon(Icons.checklist_rtl,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black),
+                label: 'To-Do',
               ),
               NavigationDestination(
-                icon: Icon(Icons.settings_outlined, color: Colors.white70),
-                selectedIcon: Icon(Icons.settings, color: Colors.white),
+                icon: Icon(Icons.settings_outlined,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white70
+                        : Colors.black54),
+                selectedIcon: Icon(Icons.settings,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? Colors.white
+                        : Colors.black),
                 label: 'Settings',
               ),
             ],

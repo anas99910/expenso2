@@ -25,7 +25,8 @@ class _AddItemSheetState extends State<AddItemSheet> {
     super.initState();
     final item = widget.itemToEdit;
     _nameController = TextEditingController(text: item?.name ?? '');
-    _quantityController = TextEditingController(text: item?.quantity.toString() ?? '1.0');
+    _quantityController =
+        TextEditingController(text: item?.quantity.toString() ?? '1.0');
     _category = item?.category ?? AppConstants.categories.first;
     _unit = item?.unit ?? AppConstants.units.first;
     _status = item?.status ?? ItemStatus.available;
@@ -74,9 +75,12 @@ class _AddItemSheetState extends State<AddItemSheet> {
                 const SizedBox(width: 12),
                 Expanded(
                   child: DropdownButtonFormField<String>(
-                    value: _unit,
-                    decoration: const InputDecoration(border: OutlineInputBorder(), labelText: 'Unit'),
-                    items: AppConstants.units.map((u) => DropdownMenuItem(value: u, child: Text(u))).toList(),
+                    initialValue: _unit,
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(), labelText: 'Unit'),
+                    items: AppConstants.units
+                        .map((u) => DropdownMenuItem(value: u, child: Text(u)))
+                        .toList(),
                     onChanged: (val) => setState(() => _unit = val!),
                   ),
                 ),
@@ -84,23 +88,30 @@ class _AddItemSheetState extends State<AddItemSheet> {
             ),
             const SizedBox(height: 12),
             DropdownButtonFormField<String>(
-              value: _category,
-              decoration: const InputDecoration(border: OutlineInputBorder(), labelText: 'Category'),
-              items: AppConstants.categories.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+              initialValue: _category,
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(), labelText: 'Category'),
+              items: AppConstants.categories
+                  .map((c) => DropdownMenuItem(value: c, child: Text(c)))
+                  .toList(),
               onChanged: (val) => setState(() => _category = val!),
             ),
             const SizedBox(height: 12),
-             DropdownButtonFormField<ItemStatus>(
-              value: _status,
-              decoration: const InputDecoration(border: OutlineInputBorder(), labelText: 'Status'),
-              items: ItemStatus.values.map((s) => DropdownMenuItem(value: s, child: Text(s.toString().split('.').last))).toList(),
+            DropdownButtonFormField<ItemStatus>(
+              initialValue: _status,
+              decoration: const InputDecoration(
+                  border: OutlineInputBorder(), labelText: 'Status'),
+              items: ItemStatus.values
+                  .map((s) => DropdownMenuItem(
+                      value: s, child: Text(s.toString().split('.').last)))
+                  .toList(),
               onChanged: (val) => setState(() => _status = val!),
             ),
             const SizedBox(height: 24),
             FilledButton(
               onPressed: () {
                 if (_nameController.text.isEmpty) return;
-                
+
                 final newItem = Item(
                   id: widget.itemToEdit?.id ?? const Uuid().v4(),
                   name: _nameController.text,
@@ -109,7 +120,7 @@ class _AddItemSheetState extends State<AddItemSheet> {
                   unit: _unit,
                   status: _status,
                 );
-                
+
                 widget.onSave(newItem);
                 Navigator.pop(context);
               },

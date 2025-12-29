@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-enum ItemStatus { available, low, needToBuy }
+enum ItemStatus { available, low, needToBuy, todo }
 
 class Item extends Equatable {
   final String id;

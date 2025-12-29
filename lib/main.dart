@@ -3,10 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:inventory_app/core/constants/app_constants.dart';
 import 'package:inventory_app/core/theme/app_theme.dart';
+import 'package:inventory_app/core/theme/theme_provider.dart';
 import 'package:inventory_app/features/inventory/data/models/item_model.dart';
 import 'package:inventory_app/features/inventory/data/repositories/inventory_repository_impl.dart';
 import 'package:inventory_app/features/inventory/presentation/providers/inventory_provider.dart';
-import 'package:inventory_app/features/inventory/presentation/screens/home_screen.dart';
+import 'package:inventory_app/features/splash/presentation/screens/splash_screen.dart';
 
 void main() async {
   // 1. Initialize Flutter Bindings
@@ -40,18 +41,20 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeProvider);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Moroccan Inventory',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system, // Auto dark mode
-      home: const HomeScreen(),
+      themeMode: themeMode,
+      home: const SplashScreen(),
     );
   }
 }
